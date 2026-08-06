@@ -19,7 +19,7 @@
 
 ## 2. Tóm tắt kết quả
 
-Nhóm đã hoàn thành pipeline dữ liệu cho hệ thống RAG từ snapshot Crossref đến cleaning, embedding bằng `sentence-transformers/all-MiniLM-L6-v2`, lưu index trong ChromaDB, tạo evaluation set, đánh giá retrieval/answer, theo dõi quality/freshness và mô phỏng corruption–repair. Baseline tạo đầy đủ raw response, raw records, cleaned CSV/JSON, embedding manifest, test set, answers, metrics, quality/freshness JSON và báo cáo Markdown. Dataset baseline có 24 bản ghi và đạt 6/6 quality checks; retrieval hit rate đạt 1.0. Corruption flow thực hiện bảy hành động gồm xóa hai bản ghi mới, làm rỗng summary, thêm noise, cắt title, làm cũ ngày xuất bản và thêm duplicate. Sau corruption, quality giảm còn 3/6, freshness chuyển sang STALE, retrieval hit rate giảm từ 1.0 xuống 0.8 và token F1 giảm từ 0.3200 xuống 0.2621. Repair từ raw snapshot phục hồi 24 bản ghi, quality 6/6, freshness FRESH và toàn bộ bốn metrics trở lại đúng baseline. Năm validation tests đã pass. Giới hạn chính là Gemini cấu hình trả HTTP 404/429, nên lượt xác minh cuối dùng heuristic judge có khai báo rõ; Ragas chưa được bật.
+Nhóm đã hoàn thành pipeline dữ liệu cho hệ thống RAG từ snapshot Crossref đến cleaning, embedding bằng `sentence-transformers/all-MiniLM-L6-v2`, lưu index trong ChromaDB, tạo evaluation set, đánh giá retrieval/answer, theo dõi quality/freshness và mô phỏng corruption–repair. Baseline tạo đầy đủ raw response, raw records, cleaned CSV/JSON, embedding manifest, test set, answers, metrics, quality/freshness JSON và báo cáo Markdown. Dataset baseline có 24 bản ghi, đạt 6/6 quality checks và retrieval hit rate 1.0. Corruption flow thực hiện bảy hành động gồm xóa hai bản ghi mới, làm rỗng summary, thêm noise, cắt title, làm cũ ngày xuất bản và thêm duplicate. Sau corruption, quality giảm còn 3/6, freshness chuyển sang STALE, retrieval hit rate giảm từ 1.0 xuống 0.8, token F1 giảm từ 0.3200 xuống 0.2621 và mean GPT-4o judge score giảm từ 2.9 xuống 2.6. Judge accuracy giữ nguyên 0.4. Repair từ raw snapshot phục hồi 24 bản ghi, quality 6/6, freshness FRESH và toàn bộ metrics trở lại đúng baseline. Năm validation tests đã pass. Evaluation đã gọi OpenAI `gpt-4o`; Ragas chưa được bật.
 
 ## 3. Kiến trúc và luồng dữ liệu
 
@@ -50,9 +50,8 @@ Crossref API/snapshot
 
 | Biến/cấu hình | Giá trị sử dụng |
 | --- | --- |
-| Cấu hình của lượt xác minh gần nhất | `gemini` / `gemini-2.5-flash` |
-| Cấu hình hiện tại, chờ rerun | `openai` / `gpt-4o` |
-| Evaluation judge của lượt xác minh | `EVALUATION_JUDGE=heuristic` do Gemini 404/429 |
+| `LLM_PROVIDER` / `LLM_MODEL` | `openai` / `gpt-4o` |
+| Evaluation judge của lượt xác minh | OpenAI `gpt-4o`, structured output gồm score/correct/reasoning |
 | Embedding model | `sentence-transformers/all-MiniLM-L6-v2` |
 | Crossref records | 24 |
 | Retrieval `top_k` | 4 |
@@ -63,7 +62,7 @@ Môi trường được cài bằng editable package trong `.venv`. Lệnh tái 
 
 ```powershell
 $env:HF_HUB_OFFLINE='1'
-$env:EVALUATION_JUDGE='heuristic'
+$env:EVALUATION_JUDGE=$null
 .\.venv\Scripts\python.exe .\script\run_phase1.py
 .\.venv\Scripts\python.exe .\script\run_corruption_flow.py
 .\.venv\Scripts\python.exe -m unittest discover -s .\tests -v
@@ -71,8 +70,8 @@ $env:EVALUATION_JUDGE='heuristic'
 
 | Lệnh | Trạng thái | Thời điểm gần nhất | Bằng chứng |
 | --- | --- | --- | --- |
-| Baseline pipeline | Thành công | 2026-08-06 16:29 ICT | `data/reports/phase1_report.md` |
-| Corruption flow | Thành công | 2026-08-06 16:30 ICT | `data/reports/corruption_report.md` |
+| Baseline pipeline | Thành công | 2026-08-06 17:14 ICT | `data/reports/phase1_report.md` |
+| Corruption flow | Thành công | 2026-08-06 17:16 ICT | `data/reports/corruption_report.md` |
 | Validation tests | 5/5 pass | 2026-08-06 | `tests/` và console result |
 
 ## 5. Ingestion, cleaning và data contract
@@ -109,7 +108,7 @@ Evaluation sample gồm `id`, `question_type`, `question`, `ground_truth` và `g
 | Ground-truth document ID | DOI lấy từ `paper_id` của cleaned record |
 | Embedding/vector store | MiniLM-L6-v2; Chroma cosine; collections baseline/corrupted/repaired |
 | Retrieval `top_k` | 4 |
-| Judge | Heuristic configured, ghi rõ backend trong metrics; thang 1–5 |
+| Judge | OpenAI `gpt-4o`; structured score/correct/reasoning; thang 1–5 |
 | Test set chung | `data/eval/test_set.json`, SHA-256 bắt đầu bằng `A415760B...` |
 
 Giữ nguyên test set giúp mọi thay đổi metrics phản ánh trạng thái dữ liệu/index, không bị nhiễu bởi việc đổi câu hỏi hoặc ground truth giữa các lần chạy.
@@ -130,8 +129,8 @@ Giữ nguyên test set giúp mọi thay đổi metrics phản ánh trạng thái
 | --- | ---: | --- |
 | `retrieval_hit_rate` | 1.0000 | Ground-truth DOI xuất hiện trong top-k ở 10/10 samples |
 | `mean_token_f1` | 0.3200 | Token overlap trung bình giữa answer và ground truth |
-| `judge_accuracy` | 0.3000 | Heuristic đánh dấu đúng 3/10 answers theo ngưỡng F1 |
-| `mean_judge_score` | 1.6000/5 | Điểm heuristic trung bình; không được trình bày là LLM judge |
+| `judge_accuracy` | 0.4000 | GPT-4o đánh dấu đúng 4/10 answers |
+| `mean_judge_score` | 2.9000/5 | Điểm đánh giá trung bình của GPT-4o |
 | Ragas | Skipped | Chưa đặt `RUN_RAGAS=1` |
 
 ## 8. Data quality và freshness
@@ -157,25 +156,25 @@ Baseline pass 6/6 checks: dataframe không rỗng, `paper_id` non-null, `paper_i
 | --- | ---: | ---: | ---: | ---: | --- |
 | Retrieval hit rate | 1.0000 | 0.8000 | 1.0000 | -0.2000 | Repair phục hồi hoàn toàn |
 | Mean token F1 | 0.3200 | 0.2621 | 0.3200 | -0.0579 | Repair phục hồi hoàn toàn |
-| Judge accuracy | 0.3000 | 0.2000 | 0.3000 | -0.1000 | Repair phục hồi hoàn toàn |
-| Mean judge score | 1.6000 | 1.4000 | 1.6000 | -0.2000 | Repair phục hồi hoàn toàn |
+| Judge accuracy | 0.4000 | 0.4000 | 0.4000 | +0.0000 | Không đổi sau corruption; repaired khớp baseline |
+| Mean judge score | 2.9000 | 2.6000 | 2.9000 | -0.3000 | Repair phục hồi hoàn toàn |
 | Quality | 6/6 PASS | 3/6 FAIL | 6/6 PASS | -3 checks | Repair phục hồi hoàn toàn |
 | Freshness | FRESH | STALE | FRESH | +1 stale row | Repair phục hồi hoàn toàn |
 
-Hai chuỗi bằng chứng: (1) drop records + invalid/duplicate/stale fields → quality/freshness xấu đi → retrieval và answer metrics giảm; (2) re-clean raw snapshot → quality/freshness trở lại baseline → bốn agent metrics phục hồi đúng baseline.
+Hai chuỗi bằng chứng: (1) drop records + invalid/duplicate/stale fields → quality/freshness xấu đi → retrieval hit, token F1 và mean GPT-4o judge score giảm; judge accuracy không đổi; (2) re-clean raw snapshot → quality/freshness trở lại baseline → toàn bộ metrics trở lại đúng baseline.
 
 ## 11. Vấn đề tích hợp quan trọng
 
-- **Triệu chứng:** live judge trả HTTP 404, sau đó 429 quota; lần chạy có retry kéo dài.
-- **Nguyên nhân:** model/provider hoặc quota Gemini hiện tại không khả dụng ổn định.
-- **Cách xử lý:** bổ sung `EVALUATION_JUDGE=heuristic` cho lượt offline deterministic và ghi `judge_backend_counts` vào artifact.
-- **Cách xác minh:** hai flow hoàn tất, mọi metrics ghi `heuristic_configured: 10`, 5/5 consistency tests pass.
+- **Triệu chứng:** `judge_backend_counts` chứa các chuỗi như `GPT-3.5`, `GPT-4` hoặc cả câu reasoning dù model cấu hình là `gpt-4o`.
+- **Nguyên nhân:** trường kỹ thuật `backend` đang nằm trong `JudgeVerdict` structured-output schema, nên GPT-4o tự sinh giá trị cho trường này thay vì pipeline tự gán metadata.
+- **Cách xử lý khi báo cáo:** xác định judge model từ `LLM_PROVIDER=openai` và `LLM_MODEL=gpt-4o`; chỉ sử dụng score/correct/reasoning, không dùng giá trị `backend` do model sinh để nhận diện model.
+- **Cách xác minh:** hai flow hoàn tất, answer artifacts chứa verdict riêng cho 10 samples mỗi trạng thái và repaired metrics khớp baseline.
 
 ## 12. Giới hạn và hướng cải thiện
 
 | Giới hạn | Ảnh hưởng | Hướng cải thiện có thể kiểm chứng |
 | --- | --- | --- |
-| Chưa xác minh live LLM agent/judge | Judge metrics hiện là heuristic | Chọn model còn hoạt động, bảo đảm quota, rerun không đặt heuristic và kiểm tra backend `llm` |
+| Metadata `judge.backend` bị model tự sinh | `judge_backend_counts` không phản ánh model thực tế | Tách backend khỏi structured-output schema và gán `backend="llm"` trong code sau khi nhận verdict |
 | Ragas bị skip | Chưa có faithfulness/context precision/recall | Bật `RUN_RAGAS=1`, lưu đầy đủ Ragas result |
 | Test set chỉ 10 samples | Độ phủ câu hỏi còn nhỏ | Tăng sample/category, giữ frozen và so sánh confidence interval |
 | Chroma sinh UUID segment directories | Cần quyết định artifact policy khi commit | Commit đầy đủ store hoặc ignore store và tài liệu hóa lệnh rebuild |
