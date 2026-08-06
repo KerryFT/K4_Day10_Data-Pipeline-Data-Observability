@@ -1,0 +1,41 @@
+{
+  "report_name": "repaired_quality_report.json",
+  "timestamp": "2026-08-06T08:58:08.672928+00:00",
+  "total_rows": 24,
+  "overall_status": "PASSED",
+  "total_checks": 6,
+  "passed_checks": 6,
+  "failed_checks": 0,
+  "checks": {
+    "non_empty_dataframe": {
+      "status": "PASSED",
+      "description": "DataFrame contains at least 1 record",
+      "total_rows": 24
+    },
+    "paper_id_not_null": {
+      "status": "PASSED",
+      "description": "No null paper_id values",
+      "failed_count": 0
+    },
+    "paper_id_unique": {
+      "status": "PASSED",
+      "description": "All paper_id values are unique",
+      "failed_count": 0
+    },
+    "title_not_null": {
+      "status": "PASSED",
+      "description": "All records have a non-empty title",
+      "failed_count": 0
+    },
+    "summary_length_valid": {
+      "status": "PASSED",
+      "description": "Summary length is at least 20 characters",
+      "failed_count": 0
+    },
+    "freshness_within_threshold": {
+      "status": "PASSED",
+      "description": "Publication age <= 180 days",
+      "failed_count": 0
+    }
+  }
+}

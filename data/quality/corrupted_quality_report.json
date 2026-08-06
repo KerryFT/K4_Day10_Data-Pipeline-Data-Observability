@@ -1,0 +1,41 @@
+{
+  "report_name": "corrupted_quality_report.json",
+  "timestamp": "2026-08-06T08:58:07.817064+00:00",
+  "total_rows": 23,
+  "overall_status": "FAILED",
+  "total_checks": 6,
+  "passed_checks": 3,
+  "failed_checks": 3,
+  "checks": {
+    "non_empty_dataframe": {
+      "status": "PASSED",
+      "description": "DataFrame contains at least 1 record",
+      "total_rows": 23
+    },
+    "paper_id_not_null": {
+      "status": "PASSED",
+      "description": "No null paper_id values",
+      "failed_count": 0
+    },
+    "paper_id_unique": {
+      "status": "FAILED",
+      "description": "All paper_id values are unique",
+      "failed_count": 1
+    },
+    "title_not_null": {
+      "status": "PASSED",
+      "description": "All records have a non-empty title",
+      "failed_count": 0
+    },
+    "summary_length_valid": {
+      "status": "FAILED",
+      "description": "Summary length is at least 20 characters",
+      "failed_count": 1
+    },
+    "freshness_within_threshold": {
+      "status": "FAILED",
+      "description": "Publication age <= 180 days",
+      "failed_count": 1
+    }
+  }
+}
