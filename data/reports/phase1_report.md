@@ -4,8 +4,8 @@
 - **Source API**: Crossref REST API
 - **Query**: `agentic retrieval augmented generation large language model`
 - **Total Records Ingested**: 24
-- **Raw File**: `C:\Users\ADMIN\OneDrive\Máy tính\labs\K4_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_records.json`
-- **Clean File**: `C:\Users\ADMIN\OneDrive\Máy tính\labs\K4_Day10_Data-Pipeline-Data-Observability\data\clean\papers_clean.json`
+- **Raw File**: `C:\Users\ADMIN\Day10\K4_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_records.json`
+- **Clean File**: `C:\Users\ADMIN\Day10\K4_Day10_Data-Pipeline-Data-Observability\data\clean\papers_clean.json`
 
 ## 2. RAG Evaluation Metrics (Baseline)
 | Metric | Value | Description |
@@ -13,7 +13,7 @@
 | **Retrieval Hit Rate** | `1.0000` | Proportion of ground truth documents retrieved in top-k context |
 | **Mean Token F1** | `0.3200` | Token overlap score between agent answer and ground truth |
 | **Judge Accuracy** | `0.3000` | Accuracy of LLM judge correctness assessment |
-| **Mean Judge Score** | `1.6000` | Average LLM judge quality rating (0-1) |
+| **Mean Judge Score** | `1.6000` | Average judge quality rating (1-5) |
 
 ## 3. Data Quality Observability
 - **Overall Status**: `PASSED`

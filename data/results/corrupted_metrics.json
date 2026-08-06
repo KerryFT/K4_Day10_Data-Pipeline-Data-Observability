@@ -4,6 +4,9 @@
   "mean_token_f1": 0.262100561845017,
   "judge_accuracy": 0.2,
   "mean_judge_score": 1.4,
+  "judge_backend_counts": {
+    "heuristic_fallback": 10
+  },
   "ragas": {
     "skipped": "Set RUN_RAGAS=1 to enable the slower Ragas pass."
   }

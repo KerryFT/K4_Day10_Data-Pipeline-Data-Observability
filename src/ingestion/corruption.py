@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from pathlib import Path
-import random
 import pandas as pd
 
 from core.utils import write_json

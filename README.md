@@ -108,12 +108,12 @@ macOS/Linux:
 cp .env.example .env
 ```
 
-Mặc định project dùng Gemini:
+Mặc định project dùng OpenAI GPT-4o:
 
 ```dotenv
-LLM_PROVIDER=gemini
-LLM_MODEL=gemini-2.5-flash
-GOOGLE_API_KEY=your_key_here
+LLM_PROVIDER=openai
+LLM_MODEL=gpt-4o
+OPENAI_API_KEY=your_key_here
 ```
 
 Project cũng hỗ trợ `openai`, `anthropic`, `openrouter`, `ollama` và OpenAI-compatible custom endpoint. Chỉ điền credential của provider bạn sử dụng.

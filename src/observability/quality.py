@@ -1,12 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
-import pandas as pd
-
-from core.config import Settings
-
-
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any

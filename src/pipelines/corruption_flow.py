@@ -64,6 +64,11 @@ def main(settings: Settings | None = None) -> None:
 
     logger.info("[Step 1] Loading baseline metrics và clean dataset...")
     baseline_metrics = read_json(paths.baseline_metrics)
+    baseline_quality_path = paths.quality_dir / "baseline_quality_report.json"
+    if not baseline_quality_path.exists() or not paths.freshness_report.exists():
+        raise FileNotFoundError("Thiếu baseline quality/freshness artifacts. Vui lòng chạy Phase 1 trước!")
+    baseline_quality = read_json(baseline_quality_path)
+    baseline_freshness = read_json(paths.freshness_report)
     clean_df = pd.read_json(paths.clean_json)
 
     # 2. Tạo corrupted dataframe.
@@ -146,8 +151,10 @@ def main(settings: Settings | None = None) -> None:
         baseline_metrics=baseline_metrics,
         corrupted_metrics=corrupted_bundle.summary,
         repaired_metrics=repaired_bundle.summary,
+        baseline_quality=baseline_quality,
         corrupted_quality=corrupted_quality,
         repaired_quality=repaired_quality,
+        baseline_freshness=baseline_freshness,
         corrupted_freshness=corrupted_freshness,
         repaired_freshness=repaired_freshness,
     )

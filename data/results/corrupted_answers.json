@@ -25,7 +25,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -54,7 +55,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -83,7 +85,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -112,7 +115,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -141,7 +145,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -170,7 +175,8 @@
     "judge": {
       "score": 3,
       "correct": true,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -197,7 +203,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -226,7 +233,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -255,7 +263,8 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   },
   {
@@ -284,7 +293,8 @@
     "judge": {
       "score": 3,
       "correct": true,
-      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable."
+      "reasoning": "Fallback heuristic judge used because the LLM evaluator was unavailable.",
+      "backend": "heuristic_fallback"
     }
   }
 ]

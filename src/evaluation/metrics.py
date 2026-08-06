@@ -22,6 +22,7 @@ class JudgeVerdict(BaseModel):
     score: int = Field(ge=1, le=5)
     correct: bool
     reasoning: str
+    backend: str = "llm"
 
 
 @dataclass(frozen=True)
@@ -46,6 +47,15 @@ def _token_f1(reference: str, prediction: str) -> float:
 
 
 def _judge_answer(settings: Settings, question: str, reference: str, prediction: str) -> JudgeVerdict:
+    if os.getenv("EVALUATION_JUDGE", "").strip().lower() in {"heuristic", "offline"}:
+        score = 5 if _token_f1(reference, prediction) >= 0.95 else 3 if _token_f1(reference, prediction) >= 0.5 else 1
+        return JudgeVerdict(
+            score=score,
+            correct=score >= 3,
+            reasoning="Configured heuristic judge used for an offline/reproducible evaluation run.",
+            backend="heuristic_configured",
+        )
+
     prompt = f"""
 Evaluate the model answer against the reference answer.
 
@@ -67,6 +77,7 @@ Return:
             score=score,
             correct=score >= 3,
             reasoning="Fallback heuristic judge used because the LLM evaluator was unavailable.",
+            backend="heuristic_fallback",
         )
 
 
@@ -136,6 +147,10 @@ def evaluate_pipeline(
         "mean_token_f1": mean(item["token_f1"] for item in answers),
         "judge_accuracy": mean(1.0 if item["judge"]["correct"] else 0.0 for item in answers),
         "mean_judge_score": mean(item["judge"]["score"] for item in answers),
+    }
+    summary["judge_backend_counts"] = {
+        backend: sum(1 for item in answers if item["judge"].get("backend", "llm") == backend)
+        for backend in sorted({item["judge"].get("backend", "llm") for item in answers})
     }
     summary["ragas"] = _run_ragas(settings, answers)
 
