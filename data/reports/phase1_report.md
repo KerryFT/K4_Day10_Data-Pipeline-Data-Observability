@@ -11,9 +11,9 @@
 | Metric | Value | Description |
 | :--- | :---: | :--- |
 | **Retrieval Hit Rate** | `1.0000` | Proportion of ground truth documents retrieved in top-k context |
-| **Mean Token F1** | `0.3200` | Token overlap score between agent answer and ground truth |
-| **Judge Accuracy** | `0.3000` | Accuracy of LLM judge correctness assessment |
-| **Mean Judge Score** | `1.6000` | Average LLM judge quality rating (0-1) |
+| **Mean Token F1** | `0.8599` | Token overlap score between agent answer and ground truth |
+| **Judge Accuracy** | `1.0000` | Accuracy of LLM judge correctness assessment |
+| **Mean Judge Score** | `4.8000` | Average LLM judge quality rating (0-1) |
 
 ## 3. Data Quality Observability
 - **Overall Status**: `PASSED`

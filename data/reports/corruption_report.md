@@ -10,9 +10,9 @@ This report analyzes the impact of intentional data corruption on RAG Agent perf
 | Metric | Baseline | Corrupted | Repaired | Impact (Corrupted vs Baseline) | Recovery (Repaired vs Baseline) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Retrieval Hit Rate** | `1.0000` | `0.8000` | `1.0000` | `-0.2000` | `+0.0000` |
-| **Mean Token F1** | `0.3200` | `0.2621` | `0.3200` | `-0.0579` | `+0.0000` |
-| **Judge Accuracy** | `0.3000` | `0.2000` | `0.3000` | `-0.1000` | `+0.0000` |
-| **Mean Judge Score** | `1.6000` | `1.4000` | `1.6000` | `-0.2000` | `+0.0000` |
+| **Mean Token F1** | `0.8599` | `0.6786` | `0.8599` | `-0.1813` | `+0.0000` |
+| **Judge Accuracy** | `1.0000` | `1.0000` | `1.0000` | `+0.0000` | `+0.0000` |
+| **Mean Judge Score** | `4.8000` | `4.5000` | `4.8000` | `-0.3000` | `+0.0000` |
 
 ---
 
